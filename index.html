@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bakeoff 3 launcher</title>
+<style>
+  body { font: 15px/1.4 system-ui, sans-serif; margin: 16px; max-width: 760px; color: #222; background: #fff; }
+  h1 { font-size: 20px; } h2 { font-size: 16px; margin-top: 24px; }
+  .m { display: block; padding: 10px 12px; margin: 6px 0; border: 1px solid #ccc; border-radius: 8px; text-decoration: none; color: inherit; }
+  .m b { color: #1565c0; }
+  #box { background: #646464; margin: 8px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  td, th { border-bottom: 1px solid #ddd; padding: 4px; text-align: left; }
+  input { width: 70px; font-size: 15px; }
+  button { font-size: 14px; padding: 4px 10px; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  textarea { width: 100%; height: 120px; font: 12px monospace; }
+</style>
+</head>
+<body>
+<h1>Bakeoff 3 – smartwatch text entry</h1>
+
+<div class="row">
+  <label>DPI <input id="dpi" type="number" step="1"></label>
+  <label>Phrases <input id="trials" type="number" min="1" value="3"></label>
+  <label>Tester <input id="who" style="width:110px" placeholder="initials"></label>
+</div>
+<p style="font-size:13px;color:#555">Calibrate: hold a ruler to the gray box and change DPI until it is exactly 1 inch wide. The professor's laptop Chrome is 110. Saved per device.</p>
+<div id="box"></div>
+
+<h2>Methods</h2>
+<div id="methods"></div>
+
+<h2>Run log (this device)</h2>
+<table id="log"></table>
+<p class="row"><button id="copy">Copy as Markdown</button><button id="clear">Clear log</button></p>
+<textarea id="md" readonly placeholder="Markdown rows for README.md appear here"></textarea>
+
+<script src="js/phrases.js"></script>
+<script src="js/registry.js"></script>
+<script src="js/methods/qwerty.js"></script>
+<script src="js/methods/baseline.js"></script>
+<script src="js/methods/zoom.js"></script>
+<script src="js/methods/drag.js"></script>
+<script src="js/methods/flick.js"></script>
+<script>
+function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+const $ = id => document.getElementById(id);
+$('dpi').value = get('bakeoff3_dpi') || 110;
+$('trials').value = get('bakeoff3_trials') || 3;
+$('who').value = get('bakeoff3_who') || '';
+function box() { const d = +$('dpi').value; $('box').style.width = $('box').style.height = d + 'px'; }
+['dpi', 'trials', 'who'].forEach(id => $(id).addEventListener('input', () => { set('bakeoff3_' + id, $(id).value); box(); links(); }));
+box();
+
+function links() {
+  $('methods').innerHTML = Object.values(METHODS).map(m =>
+    `<a class="m" href="app.html?m=${m.id}&trials=${$('trials').value}&dpi=${$('dpi').value}&who=${encodeURIComponent($('who').value)}"><b>${m.name}</b><br>${m.blurb}</a>`).join('');
+}
+links();
+
+function runs() { try { return JSON.parse(get('bakeoff3_runs') || '[]'); } catch (e) { return []; } }
+function render() {
+  const r = runs();
+  $('log').innerHTML = '<tr><th>When</th><th>Method</th><th>Who</th><th>Phr</th><th>WPM</th><th>Err</th><th>Pen.</th><th>WPM w/ pen</th></tr>' +
+    r.map(x => `<tr><td>${x.date.slice(5, 16).replace('T', ' ')}</td><td>${x.method}</td><td>${x.tester || ''}</td><td>${x.trials}</td><td>${x.wpm.toFixed(2)}</td><td>${x.errors}/${x.expected}</td><td>${x.penalty.toFixed(2)}</td><td><b>${x.wpmPenalized.toFixed(2)}</b></td></tr>`).join('');
+  $('md').value = r.map(x => `| ${x.date.slice(0, 16).replace('T', ' ')} | ${x.method} | ${x.tester || ''} | ${x.trials} | ${x.wpm.toFixed(2)} | ${x.errors}/${x.expected} (${(100 * x.errors / x.expected).toFixed(1)}%) | ${x.wpmPenalized.toFixed(2)} | |`).join('\n');
+}
+render();
+$('copy').onclick = () => { $('md').select(); try { navigator.clipboard.writeText($('md').value); } catch (e) { document.execCommand('copy'); } };
+$('clear').onclick = () => { if (confirm('Clear all runs on this device?')) { set('bakeoff3_runs', '[]'); render(); } };
+</script>
+</body>
+</html>

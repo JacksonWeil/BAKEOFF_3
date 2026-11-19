@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Bakeoff 3</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #fff; }
+  canvas { display: block; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<!-- order matters: phrases + registry, then methods, then the harness -->
+<script src="js/phrases.js"></script>
+<script src="js/registry.js"></script>
+<script src="js/methods/qwerty.js"></script>
+<script src="js/methods/baseline.js"></script>
+<script src="js/methods/zoom.js"></script>
+<script src="js/methods/drag.js"></script>
+<script src="js/methods/flick.js"></script>
+<script src="js/harness.js"></script>
+</body>
+</html>
