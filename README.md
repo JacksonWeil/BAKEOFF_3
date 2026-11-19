@@ -4,7 +4,7 @@ Type a–z and space inside a 1" × 1" touch area. Goal: max WPM with >95% accur
 
 ## Handoff (Thu Nov 19 → partner)
 
-**State:** The harness, launcher and round-1 prototypes A (ZoomQWERTY), B (Slide & lift) and C (Flick keys) are built, plus the scaffold baseline. The baseline runs on Jackson's phone. Round 1 feel test is done (see sections 3–4): Jackson leaned toward B, liked C's one-gesture-per-letter feel, and found non-QWERTY layouts hard. No timed runs are logged yet.
+**State:** The harness, launcher, round-1 prototypes A (ZoomQWERTY), B (Slide & lift) and C (Flick keys), and round-2 prototypes D (Slide & lift v2) and E (QWERTY flick) are built, plus the scaffold baseline. The baseline runs on Jackson's phone. Round 1 feel test is done (see sections 3–4): Jackson leaned toward B, liked C's one-gesture-per-letter feel, and found non-QWERTY layouts hard. No timed runs are logged yet.
 
 **Run and test (no Android needed, it's just a web page):**
 1. Laptop: `python3 -m http.server 8000` in the repo, then open `http://<laptop-ip>:8000` on any phone on the same Wi-Fi. Or turn on GitHub Pages for this branch and use `https://jacksonweil.github.io/BAKEOFF_3/`.
@@ -14,7 +14,7 @@ Type a–z and space inside a 1" × 1" touch area. Goal: max WPM with >95% accur
 **Ask the professor:** see "Rules questions" under section 1. The most important is word completion from a general word list, since it could be a big WPM gain.
 
 **Next steps:**
-- Get timed runs for the baseline + A/B/C if possible, so section 3 has numbers.
+- Time baseline vs D vs E for section 6. Earlier A/B/C timings would be a bonus for section 3.
 - Pick the best one or two and refine them for round 2. Ideas: frequency-ordered letters, swipe for space/delete everywhere, tuning `&gain=` on B, and word completion if it's allowed.
 - Keep recording short phone clips of each prototype for the video.
 
@@ -81,10 +81,23 @@ Takeaways for round 2:
 - C needs a visual cleanup if we keep it.
 
 ### 5) 2nd Prototype
-*TODO*
+Built Thu Nov 19 from the round 1 takeaways (QWERTY familiarity, one action per letter, a screen that stays still):
+- **D, Slide & lift v2** (refines B, Jackson's favorite):
+  - Taller letter rows.
+  - The preview bubble shows the neighbor keys (`g [H] j`), so you know which way to slide.
+  - A fast flick right types space and a fast flick left deletes; slow slides still pick letters.
+  - Optional `&gain=0.6` URL param gives a slower, finer cursor.
+- **E, QWERTY flick** (C's single gesture on a QWERTY layout): 9 big keys, each with up to 3 letters in QWERTY order (`qwe rty uio / asd fgh jkl / zxc vbn m·p`).
+  - Tap gives the middle letter; flick left or right gives the side letters.
+  - Flick down anywhere for space, flick up anywhere to delete.
+  - `p` is the only letter that moved (to the bottom-right key, after `m`).
+  - Each key is about 3x wider than a tiny-QWERTY key.
+- Bug fix: the oversized ⌫ label on B.
 
 ### 6) 2nd Testing (benchmark vs scaffold)
-*TODO*
+*TODO: time baseline vs D vs E (same tester, same number of phrases, e.g. 5). Paste the rows into the test log and add 1–2 lines on feel. Things to watch:*
+- *D: do fast flicks for space/delete ever fire by accident during a slow slide?*
+- *E: is the moved `p` annoying? Is tapping or flicking more accurate than sliding?*
 
 ### 7) Refinement & Final Prototype (tour)
 *TODO*
@@ -103,5 +116,6 @@ Paste rows from the launcher's **Copy as Markdown** button. "Err" is Levenshtein
 | | baseline | | | | | | scaffold benchmark |
 
 ## Work log
+- **Thu Nov 19 (pm, later):** Built round 2 prototypes D and E (section 5). Not tested yet.
 - **Thu Nov 19 (pm):** Round 1 feel test by Jackson (notes in sections 3–4). Handing off to partner.
 - **Thu Nov 19:** Ported the scaffold to plain JS with a method plug-in system and a launcher (DPI calibration, run log). Built round-1 prototypes A/B/C and wrote the idea list and rules questions.

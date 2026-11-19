@@ -16,7 +16,7 @@ registerMethod({
       const hot = this.d && !this.d.out && this.d.key === k;
       drawKey(g, k.x, k.y, k.w, k.h, k.label, {
         fill: hot ? '#ffd54f' : (k.ch === ' ' || k.ch === '\b' ? '#cfd8dc' : '#eee'),
-        font: k.label.length > 1 ? 9 : k.w * 0.9,
+        font: k.label.length > 1 ? 9 : k.ch === '\b' ? k.h * 0.6 : k.w * 0.9,
       });
     }
     if (this.d) {

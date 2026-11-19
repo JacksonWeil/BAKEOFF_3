@@ -2,16 +2,17 @@
 // 4 rows: three letter rows plus a bottom row [delete | space]. Coordinates are in "key units":
 // each row is 10 units wide; returns rects scaled to an S x S area.
 const QWERTY_ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
-function qwertyKeys(S) {
-  const rows = 4, rh = S / rows, kw = S / 10;
+function qwertyKeys(S, letterFrac = 0.75) {
+  // letterFrac = share of the height used by the 3 letter rows (rest is the [delete|space] row)
+  const rh = S * letterFrac / 3, bh = S - 3 * rh, kw = S / 10;
   const keys = [];
   QWERTY_ROWS.forEach((row, r) => {
     const off = (10 - row.length) / 2 * kw; // center shorter rows
     for (let i = 0; i < row.length; i++)
       keys.push({ ch: row[i], label: row[i], x: off + i * kw, y: r * rh, w: kw, h: rh });
   });
-  keys.push({ ch: '\b', label: '⌫', x: 0, y: 3 * rh, w: 3 * kw, h: rh });
-  keys.push({ ch: ' ', label: 'space', x: 3 * kw, y: 3 * rh, w: 7 * kw, h: rh });
+  keys.push({ ch: '\b', label: '⌫', x: 0, y: 3 * rh, w: 3 * kw, h: bh });
+  keys.push({ ch: ' ', label: 'space', x: 3 * kw, y: 3 * rh, w: 7 * kw, h: bh });
   return keys;
 }
 function keyAt(keys, x, y) {
