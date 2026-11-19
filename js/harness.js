@@ -124,7 +124,8 @@ function drawResults() {
     'Penalty: ' + penalty.toFixed(3),
     'WPM w/ penalty: ' + (wpm - penalty).toFixed(3),
     '',
-    'Saved to the run log on the launcher page.',
+    saveStatus,
+    'Also kept in the launcher\'s run log.',
     'Tap here to go back.',
   ];
   g.fillStyle = '#000'; g.textAlign = 'center'; g.font = '16px sans-serif';
@@ -192,7 +193,9 @@ function nextTrial() {
     const freebieErrors = lettersExpectedTotal * .05;
     const penalty = Math.max(errorsTotal - freebieErrors, 0) * .5;
     saveRun({
-      method: methodId, date: new Date().toISOString(), tester: params.get('who') || '',
+      runId: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+      method: methodId, methodName: method.name, date: new Date().toISOString(), tester: params.get('who') || '',
+      device: W + 'x' + H + ' ' + (navigator.userAgent.match(/\(([^)]*)\)/) || ['', ''])[1],
       dpi: DPI, trials: totalTrialNum, timeMs: Math.round(finishTime - startTime),
       entered: lettersEnteredTotal, expected: lettersExpectedTotal, errors: errorsTotal,
       wpm: +wpm.toFixed(3), penalty: +penalty.toFixed(3), wpmPenalized: +(wpm - penalty).toFixed(3),
@@ -211,12 +214,20 @@ function nextTrial() {
   if (method.reset) method.reset(api);
 }
 
+let saveStatus = 'Saving to results CSV...';
+
 function saveRun(run) {
   console.log('RUN RESULT', JSON.stringify(run));
+  // 1) device-local run log (launcher table, Download CSV)
   let runs = [];
   try { runs = JSON.parse(safeGet('bakeoff3_runs') || '[]'); } catch (e) {}
   runs.push(run);
   safeSet('bakeoff3_runs', JSON.stringify(runs));
+  // 2) results/runs.csv + results/trials.csv on the laptop (only when served by serve.py)
+  fetch('api/results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(run) })
+    .then(r => r.json().catch(() => ({ ok: false })))
+    .then(j => { saveStatus = j.ok ? 'Saved to results/runs.csv on the laptop.' : 'NOT saved to CSV (server said no). Use Download CSV.'; })
+    .catch(() => { saveStatus = 'NOT saved to CSV (no serve.py). Use Download CSV.'; });
 }
 
 // unchanged from the scaffold

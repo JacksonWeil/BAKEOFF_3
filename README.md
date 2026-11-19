@@ -7,9 +7,9 @@ Type a–z and space inside a 1" × 1" touch area. Goal: max WPM with >95% accur
 **State:** The harness, launcher, round-1 prototypes A (ZoomQWERTY), B (Slide & lift) and C (Flick keys), and round-2 prototypes D (Slide & lift v2) and E (QWERTY flick) are built, plus the scaffold baseline. The baseline runs on Jackson's phone. Round 1 feel test is done (see sections 3–4): Jackson leaned toward B, liked C's one-gesture-per-letter feel, and found non-QWERTY layouts hard. No timed runs are logged yet.
 
 **Run and test (no Android needed, it's just a web page):**
-1. Laptop: `python3 -m http.server 8000` in the repo, then open `http://<laptop-ip>:8000` on any phone on the same Wi-Fi. Or turn on GitHub Pages for this branch and use `https://jacksonweil.github.io/BAKEOFF_3/`.
+1. Laptop: `python serve.py` in the repo (it prints the phone URL), then open that `http://<laptop-ip>:8000` on any phone on the same Wi-Fi. Or turn on GitHub Pages for this branch and use `https://jacksonweil.github.io/BAKEOFF_3/`.
 2. On the launcher, calibrate DPI with a ruler (it's saved per device), set Phrases to 3–5 and your initials, and run each method.
-3. Paste the launcher's "Copy as Markdown" rows into the test log below and write one line of notes per run.
+3. Every finished run is saved automatically to `results/runs.csv` (and per-phrase times to `results/trials.csv`). Run `python plot_results.py` to rank the versions and save `results/results.png`. Optionally paste the launcher's "Copy as Markdown" rows into the test log below with one line of notes per run.
 
 **Ask the professor:** see "Rules questions" under section 1. The most important is word completion from a general word list, since it could be a big WPM gain.
 
@@ -22,9 +22,14 @@ Type a–z and space inside a 1" × 1" touch area. Goal: max WPM with >95% accur
 
 It's plain HTML/JS with no build step. All touches and drawing for a method happen inside the 1" area, and the harness clips drawing to it.
 
-- **Laptop:** `python3 -m http.server 8000` in this folder, then open http://localhost:8000.
-- **Phone or tablet (same Wi-Fi):** run the same server, then open `http://<your-laptop-ip>:8000` on the phone.
+- **Laptop:** `python serve.py` in this folder, then open http://localhost:8000. It turns caching off (phones otherwise keep stale JS) and saves results. Plain `python -m http.server` still serves the pages but won't save CSVs.
+- **Phone or tablet (same Wi-Fi):** run the same server, then open the phone URL it prints (`http://<your-laptop-ip>:8000`). If the phone can't connect, allow Python through Windows Firewall on private networks.
 - **Phone, anywhere (easiest for testers):** turn on GitHub Pages (repo Settings → Pages → deploy from branch → pick this branch, `/ (root)`), then open `https://jacksonweil.github.io/BAKEOFF_3/`.
+
+### Results and graphs
+- With `serve.py` running, each finished run is appended to `results/runs.csv` (tester, method, time, WPM, errors, penalty, WPM w/ penalty) and `results/trials.csv` (each phrase, what was typed, its time). The results screen says whether it saved.
+- Runs done before that, or on GitHub Pages, stay in the launcher's run log on that phone. Use **Send log to laptop** (duplicates are skipped) or **Download CSV**.
+- `python plot_results.py` prints a ranked table and saves `results/results.png`, ranked by mean WPM w/ penalty, with seconds per character and error rate alongside. Options: extra CSV paths to merge downloaded files, `--tester JW`, `--since 2026-11-20`, `--show`.
 
 `index.html` is the launcher. Set **DPI** so the gray box measures 1 inch with a ruler (the prof's Chrome is 110), set the number of phrases and the tester's initials, and pick a method. When a run finishes, the result is saved to that device's run log on the launcher. **Copy as Markdown** gives table rows to paste into the test log below.
 
@@ -37,6 +42,8 @@ The original scaffold is in `scaffold/` for reference. `scaffold/html/bakeoff3sc
 | `js/registry.js` | `registerMethod()` plus small shared helpers (gesture classifier, `drawKey`) |
 | `js/methods/*.js` | One file per text-entry method. Add a new one, add a `<script>` tag to `app.html` and `index.html`, and it shows up in the launcher |
 | `js/phrases.js` | Phrase list copied from the scaffold |
+| `serve.py` | Local server: no caching, saves finished runs to `results/*.csv` |
+| `plot_results.py` | Ranks versions from `results/runs.csv` and saves `results/results.png` |
 
 ---
 

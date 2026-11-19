@@ -34,7 +34,8 @@
 
 <h2>Run log (this device)</h2>
 <table id="log"></table>
-<p class="row"><button id="copy">Copy as Markdown</button><button id="clear">Clear log</button></p>
+<p class="row"><button id="send">Send log to laptop</button><button id="csv">Download CSV</button><button id="copy">Copy as Markdown</button><button id="clear">Clear log</button></p>
+<p id="sendStatus" style="font-size:13px;color:#555">Runs are saved to <code>results/runs.csv</code> automatically when the laptop runs <code>python serve.py</code>. Use "Send log to laptop" for runs done before that, or "Download CSV" on GitHub Pages.</p>
 <textarea id="md" readonly placeholder="Markdown rows for README.md appear here"></textarea>
 
 <script src="js/phrases.js"></script>
@@ -72,6 +73,28 @@ function render() {
 }
 render();
 $('copy').onclick = () => { $('md').select(); try { navigator.clipboard.writeText($('md').value); } catch (e) { document.execCommand('copy'); } };
+// older runs have no runId; derive a stable one so the server can skip duplicates
+function withId(x) { return Object.assign({}, x, { runId: x.runId || ('old-' + x.date + '-' + x.method) }); }
+$('send').onclick = async () => {
+  const r = runs(); let saved = 0, dup = 0, bad = 0;
+  for (const x of r) {
+    try {
+      const j = await (await fetch('api/results', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(withId(x)) })).json();
+      if (!j.ok) bad++; else if (j.status === 'duplicate') dup++; else saved++;
+    } catch (e) { bad++; }
+  }
+  $('sendStatus').textContent = bad === r.length && r.length
+    ? 'Could not reach serve.py on the laptop. Start it with "python serve.py", or use Download CSV.'
+    : `Sent: ${saved} new, ${dup} already on the laptop` + (bad ? `, ${bad} failed` : '') + '.';
+};
+$('csv').onclick = () => {
+  const cols = ['run_id', 'date', 'tester', 'method', 'method_name', 'trials', 'dpi', 'time_ms', 'letters_entered', 'letters_expected', 'errors', 'raw_wpm', 'penalty', 'wpm_penalized', 'device'];
+  const q = v => { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  const rows = runs().map(withId).map(x => [x.runId, x.date, x.tester, x.method, x.methodName || (METHODS[x.method] || {}).name, x.trials, x.dpi, x.timeMs, x.entered, x.expected, x.errors, x.wpm, x.penalty, x.wpmPenalized, x.device].map(q).join(','));
+  const blob = new Blob([cols.join(',') + '\n' + rows.join('\n') + '\n'], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'runs-' + ($('who').value || 'device') + '.csv'; a.click();
+};
 $('clear').onclick = () => { if (confirm('Clear all runs on this device?')) { set('bakeoff3_runs', '[]'); render(); } };
 </script>
 </body>
