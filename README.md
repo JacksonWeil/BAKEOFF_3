@@ -2,6 +2,28 @@
 
 Type a–z and space inside a 1" × 1" touch area. Goal: max WPM with >95% accuracy. No biasing toward the target phrase, no voice, no T9, and it must handle arbitrary strings like `hfgwmcwx`. Due **Sunday Nov 22**.
 
+## Quick start (copy-paste)
+
+You need Python 3 and git. No Android or other installs are required.
+
+```
+git clone -b claude/project-thread-et6wf8 https://github.com/JacksonWeil/BAKEOFF_3.git
+cd BAKEOFF_3
+python serve.py
+```
+
+1. **On the laptop:** open **http://localhost:8000**.
+2. **On a phone (same Wi-Fi as the laptop):** open the "phone" URL that `serve.py` prints, which looks like `http://192.168.x.x:8000`. If it doesn't print one, find your laptop's IP:
+   - Windows: `ipconfig` (look for "IPv4 Address" under Wi-Fi).
+   - Mac: `ipconfig getifaddr en0`.
+3. On the launcher, set DPI so the gray box measures 1 inch, enter your initials, and tap a method.
+
+**Troubleshooting**
+- **Phone can't connect:** on Windows, click "Allow" on the firewall prompt the first time (Private networks), or allow Python in Windows Defender Firewall. Make sure both devices are on the same Wi-Fi network, not a guest network.
+- **Phone shows an old version:** do a hard refresh or open a private tab. `serve.py` turns caching off, but plain `python -m http.server` doesn't.
+- **Already cloned:** run `git pull` inside the folder instead of cloning again.
+- **Use `python3`** instead of `python` if that's what your system has.
+
 ## Handoff (Thu Nov 19 → partner)
 
 **State:** The harness, launcher, round-1 prototypes A (ZoomQWERTY), B (Slide & lift) and C (Flick keys), and round-2 prototypes D (Slide & lift v2) and E (QWERTY flick) are built, plus the scaffold baseline. The baseline runs on Jackson's phone. Round 1 feel test is done (see sections 3–4): Jackson leaned toward B, liked C's one-gesture-per-letter feel, and found non-QWERTY layouts hard. No timed runs are logged yet.
