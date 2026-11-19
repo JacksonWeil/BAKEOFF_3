@@ -2,6 +2,22 @@
 
 Type a–z and space inside a 1" × 1" touch area. Goal: max WPM with >95% accuracy. No biasing toward the target phrase, no voice, no T9, and it must handle arbitrary strings like `hfgwmcwx`. Due **Sunday Nov 22**.
 
+## Handoff (Thu Nov 19 → partner)
+
+**State:** The harness, launcher and round-1 prototypes A (ZoomQWERTY), B (Slide & lift) and C (Flick keys) are built, plus the scaffold baseline. The baseline runs on Jackson's phone. A/B/C have only had a quick first pass, with no timed runs logged yet.
+
+**Run and test (no Android needed, it's just a web page):**
+1. Laptop: `python3 -m http.server 8000` in the repo, then open `http://<laptop-ip>:8000` on any phone on the same Wi-Fi. Or turn on GitHub Pages for this branch and use `https://jacksonweil.github.io/BAKEOFF_3/`.
+2. On the launcher, calibrate DPI with a ruler (it's saved per device), set Phrases to 3–5 and your initials, and run each method.
+3. Paste the launcher's "Copy as Markdown" rows into the test log below and write one line of notes per run.
+
+**Ask the professor:** see "Rules questions" under section 1. The most important is word completion from a general word list, since it could be a big WPM gain.
+
+**Next steps:**
+- Time baseline + A/B/C (a couple of testers, about 5 phrases each) and fill in sections 3–4.
+- Pick the best one or two and refine them for round 2. Ideas: frequency-ordered letters, swipe for space/delete everywhere, tuning `&gain=` on B, and word completion if it's allowed.
+- Keep recording short phone clips of each prototype for the video.
+
 ## How to run
 
 It's plain HTML/JS with no build step. All touches and drawing for a method happen inside the 1" area, and the harness clips drawing to it.
