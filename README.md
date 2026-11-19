@@ -4,7 +4,7 @@ Type a–z and space inside a 1" × 1" touch area. Goal: max WPM with >95% accur
 
 ## Handoff (Thu Nov 19 → partner)
 
-**State:** The harness, launcher and round-1 prototypes A (ZoomQWERTY), B (Slide & lift) and C (Flick keys) are built, plus the scaffold baseline. The baseline runs on Jackson's phone. A/B/C have only had a quick first pass, with no timed runs logged yet.
+**State:** The harness, launcher and round-1 prototypes A (ZoomQWERTY), B (Slide & lift) and C (Flick keys) are built, plus the scaffold baseline. The baseline runs on Jackson's phone. Round 1 feel test is done (see sections 3–4): Jackson leaned toward B, liked C's one-gesture-per-letter feel, and found non-QWERTY layouts hard. No timed runs are logged yet.
 
 **Run and test (no Android needed, it's just a web page):**
 1. Laptop: `python3 -m http.server 8000` in the repo, then open `http://<laptop-ip>:8000` on any phone on the same Wi-Fi. Or turn on GitHub Pages for this branch and use `https://jacksonweil.github.io/BAKEOFF_3/`.
@@ -14,7 +14,7 @@ Type a–z and space inside a 1" × 1" touch area. Goal: max WPM with >95% accur
 **Ask the professor:** see "Rules questions" under section 1. The most important is word completion from a general word list, since it could be a big WPM gain.
 
 **Next steps:**
-- Time baseline + A/B/C (a couple of testers, about 5 phrases each) and fill in sections 3–4.
+- Get timed runs for the baseline + A/B/C if possible, so section 3 has numbers.
 - Pick the best one or two and refine them for round 2. Ideas: frequency-ordered letters, swipe for space/delete everywhere, tuning `&gain=` on B, and word completion if it's allowed.
 - Keep recording short phone clips of each prototype for the video.
 
@@ -65,10 +65,20 @@ Rules questions to ask the professor:
 Round 1 web prototypes, all switchable from the launcher: **A: ZoomQWERTY**, **B: Slide & lift QWERTY**, **C: Flick keys**, plus the **scaffold baseline** ported 1:1 for benchmarking. *(Record a short phone video of each.)*
 
 ### 3) 1st Testing
-*TODO: who tested, how many phrases, which device and DPI. Paste rows into the test log.*
+**Round 1 done (Thu Nov 19).** Jackson tried each prototype for a few letters on his phone. This was a quick feel test with no timed runs logged.
+
+- **A, ZoomQWERTY (two-step zoom):** Pretty intuitive and a good starting point.
+- **B, Slide & lift:** At first it felt a little less intuitive than A, with more timing pressure. After a few letters he preferred it to A, because the screen always looks the same (no zoom jump).
+- **C, Flick keys (swipe direction):** Not bad. He liked that each letter is a single tap or swipe instead of a two-step input. The interface doesn't look as nice as the others.
+- **All of them:** It's hard to get used to the letter placements because we're so used to a full QWERTY keyboard.
 
 ### 4) 1st Refinement
-*TODO: what we learned, what we dropped, and what we're combining.*
+Takeaways for round 2:
+- **Familiar layout matters.** Keep QWERTY, or something that feels like it, rather than inventing a new arrangement. This counts against C's alphabetical layout.
+- **One action per letter beats two.** C's single gesture felt good, and B is also one touch per letter. A's two taps are the slowest.
+- **A stable screen is nicer than zoom jumps.** This favors B.
+- Possible round 2 direction: keep B's fixed QWERTY, one touch per letter and preview bubble, and make it more forgiving with a slower cursor (`&gain=`) or bigger keys. Or a QWERTY-arranged flick hybrid that takes C's single gesture onto a familiar layout.
+- C needs a visual cleanup if we keep it.
 
 ### 5) 2nd Prototype
 *TODO*
@@ -93,4 +103,5 @@ Paste rows from the launcher's **Copy as Markdown** button. "Err" is Levenshtein
 | | baseline | | | | | | scaffold benchmark |
 
 ## Work log
+- **Thu Nov 19 (pm):** Round 1 feel test by Jackson (notes in sections 3–4). Handing off to partner.
 - **Thu Nov 19:** Ported the scaffold to plain JS with a method plug-in system and a launcher (DPI calibration, run log). Built round-1 prototypes A/B/C and wrote the idea list and rules questions.
